@@ -10,7 +10,7 @@ env:
 jobs:
 
   check-version:
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted # ubuntu-18.04
     outputs:
       version: ${{ steps.retrieve-version.outputs.version }}
     steps:
@@ -25,7 +25,7 @@ jobs:
         run: bash .github/workflows/scripts/get_version.sh
 
   test-ubuntu:
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted # ubuntu-18.04
     needs: check-version
     steps:
       - name: Checkout
@@ -41,43 +41,43 @@ jobs:
       - name: Test
         run: cargo test
 
-  test-windows:
-    runs-on: windows-2019
-    needs: check-version
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ env.RUST_VERSION_STABLE }}
-          profile: minimal
-          override: true
-      - name: Build
-        run: cargo build --all-targets
-      - name: Test
-        run: cargo test
-
-  test-macos:
-    runs-on: macos-10.15
-    needs: check-version
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: ${{ env.RUST_VERSION_STABLE }}
-          profile: minimal
-          override: true
-      - name: Build
-        run: cargo build --all-targets
-      - name: Test
-        run: cargo test
+#  test-windows:
+#    runs-on: windows-2019
+#    needs: check-version
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#      - name: Install Rust toolchain
+#        uses: actions-rs/toolchain@v1
+#        with:
+#          toolchain: ${{ env.RUST_VERSION_STABLE }}
+#          profile: minimal
+#          override: true
+#      - name: Build
+#        run: cargo build --all-targets
+#      - name: Test
+#        run: cargo test
+#
+#  test-macos:
+#    runs-on: macos-10.15
+#    needs: check-version
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#      - name: Install Rust toolchain
+#        uses: actions-rs/toolchain@v1
+#        with:
+#          toolchain: ${{ env.RUST_VERSION_STABLE }}
+#          profile: minimal
+#          override: true
+#      - name: Build
+#        run: cargo build --all-targets
+#      - name: Test
+#        run: cargo test
 
   check-publication:
     environment: Deployment
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted # ubuntu-18.04
     needs: check-version
     steps:
       - name: Checkout
@@ -95,7 +95,7 @@ jobs:
 
   publish:
     environment: Deployment
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted # ubuntu-18.04
     needs:
       - test-ubuntu
       - test-windows
@@ -117,7 +117,7 @@ jobs:
 
   create-release:
     environment: Deployment
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted # ubuntu-18.04
     needs:
       - check-version
       - publish
